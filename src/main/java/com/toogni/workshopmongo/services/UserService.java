@@ -22,14 +22,20 @@ public class UserService {
 	}
 	
 	public User findById(String id) {
-		Optional<User> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found"));
+		Optional<User> user = repository.findById(id);
+		return user.orElseThrow(() -> new ObjectNotFoundException("Object not found"));
 	}
 	
-	public User insert(User obj) {
-		return repository.save(obj);
+	public User insert(User user) {
+		return repository.save(user);
 	}
 	
+	public User update(User data) {
+		User user = findById(data.getId());
+		updateData(user, data);
+		return repository.save(user);
+	}
+
 	public void delete(String id) {
 		findById(id);
 		repository.deleteById(id);
@@ -37,5 +43,10 @@ public class UserService {
 	
 	public User fromDTO(UserDTO userDTO) {
 		return new User(userDTO.getId(), userDTO.getName(), userDTO.getEmail());
+	}
+	
+	private void updateData(User user, User data) {
+		user.setName(data.getName());
+		user.setEmail(data.getEmail());
 	}
 }
